@@ -1,0 +1,5 @@
+dependencies:
+  idf: ">=5.5"
+  # usb_host_uac is vendored in components/ (modified, Apache-2.0)
+  espressif/mdns: "^1.4.0"
+  espressif/led_strip: "^3.0.0"

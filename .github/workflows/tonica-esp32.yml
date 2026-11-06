@@ -1,0 +1,24 @@
+# Build check for the Tónica firmware (a dev build; releases are built locally, docs/release-spec.md).
+name: Tónica ESP32-S3
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container: espressif/idf:v5.5.1
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build
+        shell: bash
+        run: |
+          git config --global --add safe.directory '*'
+          . "$IDF_PATH/export.sh"
+          cd tonica
+          idf.py set-target esp32s3
+          python apply_settings.py
+          idf.py build

@@ -1,0 +1,20 @@
+# Build check for the Listenica host on Windows, plus the offline unit tests.
+name: Listenica Windows
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build
+        run: |
+          cmake -S host -B build -A x64
+          cmake --build build --config Release --target listenica_host unit_tests
+      - name: Unit tests
+        run: build\Release\unit_tests.exe

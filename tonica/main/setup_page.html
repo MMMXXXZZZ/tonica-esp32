@@ -1,0 +1,641 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Tónica setup</title>
+<style>
+@font-face{font-family:"TonicaMark";font-weight:700;font-display:block;src:url(data:font/woff2;base64,d09GMgABAAAAAAYwABAAAAAACwAAAAXTAAIBSAAAAAAAAAAAAAAAAAAAAAAAAAAAGhYbgTYcKgZgP1NUQVRaAFwRCAqIUIc2ATYCJAMkCxQABCAFhSwHIAwHGzoJUZRRTh7FR0JuovUSSzAQQbspLUQM5Q1bO8XD/+8P+n3uu2+sBKHCbaYDbLMmFCWoTaW6EsAm/3+Hf0//T5ozJTNyJ6SdiLRLxUxKey0XF3zCl+T3v1+rZmkPic6Al87phEYp8z74XY1vH2aDqJdEIxKaqEYaoeBxIyE2eNWWYPVxDFtY8fLVBJoBkhBqIdDEYFk4E0uqmoDjSopRAm8QSqFaPxAraK0S2CJFy1LC0Egy9geZrANUG4xynMoPyiv0bi1SlrUXJCUa7oopKkQCR1iQd95ERZ623iKzhnPIeVe6rKZul49hN1OWBYanSJi6su2yjdGEa2b7pdH1f5+gn7IiAAHV3voJukKF0EiFdlAMxFmj1o0ikC1LxAyCimUMJUfccDTQRiAEoo0+QAiiUbqMSpKiHYAAifkRzAZNNS00mtMXs1EEJJR+KQXRF+VI2V62lY1lbXGHGHQIHVpyNJbRZva2YgkA8VFoSzPYARJRmdL+JZHzQm/uFX3j7THM19kdx8dcRpROY44jC5AZr61bdwadu3QpctUq90fkidq1XmfP3s28cOdMyhrPJ4lHq1ev9th/+XL6lh1bAtcgM/hCMO2+adM2/4tXr8asXev1NO541Sr3U6dupZ2/fTp5tcdj3qGaNWs8D1y5krF5++aA1WDaAcHHsAVGo7EJQ8c4mHlYEcNGcDCywGxG0BnJclkGYDMWfKEJTBtrNrKQb8lrTABOX2ZtLIkeRqNj7MVxEFQKpk3P6xILgk/nfooMnUqyZlGplVUBbMa8CIfxYNXuVhz9xpzImiu1W+PAEcFtMGSMB9pHjsBcqznsNxKn+65GW1AbWxaaZ0HW6jbm2XrSYoran7dIMgGrd9bkZd+HnwFWS8543Pw7rdjBpvn9Sf/WJo4l0VCw7Om147P1Od+TOob8IVs/+/i1p8vzDYlmtLEt4MT7ZmuH4rR03TbWxT+fiBM3ouZCJv741ajbGjbuB5LRkcFudg1sc/VYAlNo4TSJYk/+XGwTHRvw4DtgZdTXjVa2GpIOYj3wU9028Kn+L0k+2GIweepnfP7/dxCkqt3zRERWVf6dMp8Vtfy6eKUXPz6nKoWT21OVU0AVF5QKyvKKOiry0/Lq5ImzvYvWn2mqXdljNSswIqAl5SIRULysUsluMGjnfL3E9B3cWdXeEKlL4Lq3+UTHVeTFzBHDofwDhg5Aus17K54x7liqtbwe3jR4tLxvvLq8qzE/rHJWQmFyqaAmL6e7qpSTndHXW6QNSStv7YhZ6rittMV1J5dtqy5umCrpmPZphuFzrxwA7qGbSil+aTnVR/LKhZsVoKtY6A/ZZSwE/oXrVvXD/7N+mR7mPvcdZaPnEgw32avmRld2NvPmuKwrSqpwO5S33kCp1WPVvHmA57b2jX7gNcsCs+lr8Thr0NSyuqi5LvvbO1z2Rc0rq01NQ8ZcZzG3HdnKHm9IO+A2ek+bw3+Oz/Ks7uI3p2F9csEv0KA3azTUyKH/LgdMKz9ln3r9/9sEUkz9rfVxfG/LrO+2VcMb8PiK8xJ43/LiXt3LT3Vsw/doIIHgO3PXM9uw/4pG/xpqG+fj7sKp8jwzs5fyNACS8gv9cx8oJ78IiGEQNLYSagh0JiS0tXB0YOTGuIxAoYNLlLRwiyrjfaKsd/hSrUvkUQM9oyOmhdExmSIqzeI0ZZ3iGjXSKB74twl+QW3Zx4e7tYPFNxOoqI3QkhARYxAS8GJNaJL9aSmg0g9aSSIFVguFUKduqyJFE+SSbwCjFBUtHSJy3r0YajoZuLhEJH7sLXwkQW4UuB/3Wv1oOgytgTlFgk9u8Y9beoQajbub+UTtTRrQRLC3HEUrAYmHJ1nm+oujETL12dkscTCuk4/ma1rQJ4bEfxqx6oRXGv2OmEHwHlqNEUDObuTIW91ahKtWiSqt6DdDrUIkBKgMhM6MovfglstNuhS/qHKM5Y+Gu29DUUIN6ZWDhmt9Psrs43k7AAAA) format("woff2")}
+:root{--bg:#f3f6f4;--text:#14233a;--muted:#4e5d6e;--line:#cbd6ce;--field:#fff;--accent:#2337c6;--accent-ink:#fff;--brand:#2337c6;--warn:#8a5a00;--err:#b3261e;--guide:#14233a}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.brand{background:var(--brand);color:#fff}
+.brand .inner{max-width:34rem;margin:0 auto;padding:1.4rem 1rem 1.1rem;display:flex;align-items:baseline;justify-content:space-between;gap:1rem;flex-wrap:wrap}
+h1{margin:0;font:700 2.6rem/1 "TonicaMark","Bodoni 72","Didot",serif;letter-spacing:-.01em}
+.brand .id{font-size:.85rem;opacity:.8}
+main{max-width:34rem;margin:0 auto;padding:.5rem 1rem 7rem}
+fieldset{border:0;border-top:1.5px solid var(--line);padding:1.1rem 0 1.4rem;margin:0;min-width:0}
+legend{float:left;width:100%;padding:0;margin:0 0 .2rem;font-weight:650;font-size:1.1rem}
+legend+*{clear:both}
+label{display:block;margin:.85rem 0 .3rem;font-weight:550}
+.hint{color:var(--muted);font-size:.875rem;margin:.3rem 0 0}
+input,select,textarea{width:100%;font:inherit;color:var(--text);background:var(--field);border:1.5px solid var(--line);border-radius:.55rem;padding:.6rem .7rem}
+input:hover,select:hover,textarea:hover{border-color:var(--muted)}
+textarea{resize:vertical;min-height:3.2rem}
+.actions{display:flex;align-items:center;gap:.75rem;margin-top:.9rem}
+.actions .status{margin:0;flex:1}
+button.secondary{flex:0 0 auto;font:inherit;font-weight:600;color:var(--accent);background:transparent;border:1.5px solid var(--accent);border-radius:999px;padding:.5rem 1.1rem;cursor:pointer}
+button.secondary:disabled{opacity:.5;cursor:not-allowed}
+button.link{font:inherit;font-size:.875rem;color:var(--accent);background:none;border:0;padding:.3rem 0;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+input:focus-visible,select:focus-visible,textarea:focus-visible,button:focus-visible,.seg input:focus-visible+span{outline:3px solid var(--accent);outline-offset:2px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}
+.seg{display:flex;flex-wrap:wrap;gap:.45rem;margin-top:.35rem}
+.seg label{margin:0;font-weight:500;position:relative}
+.seg input{position:absolute;left:0;top:0;width:1px;height:1px;margin:0;opacity:0;pointer-events:none}
+.seg span{display:inline-block;padding:.45rem .85rem;border:1.5px solid var(--line);border-radius:999px;background:var(--field);cursor:pointer}
+.seg input:checked+span{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.seg input:disabled+span{opacity:.4;cursor:not-allowed}
+.hidden{display:none}
+.secret{-webkit-text-security:disc}.secret.shown{-webkit-text-security:none}
+.code{display:inline-block;font-family:inherit;font-weight:700;font-size:1.6rem;line-height:1.2;letter-spacing:.14em;color:var(--accent);background:none;border:1.5px dashed var(--line);border-radius:.55rem;padding:.2rem .7rem;margin:.3rem 0;cursor:copy;user-select:all}
+.steps-mini{margin:.4rem 0 0;padding-left:1.2rem}.steps-mini li{margin:.2rem 0}
+.who{margin:.9rem 0 0;font-weight:600;color:var(--accent)}
+.btn-pair{display:inline-block;font-weight:700;background:var(--accent);color:var(--accent-ink);border-radius:999px;padding:.6rem 1.2rem;text-decoration:none;margin:.4rem 0 .6rem}
+.status{margin:.6rem 0 0;font-size:.9rem}
+.status.err{color:var(--err)} .status.warn{color:var(--warn)}
+footer{position:fixed;left:0;right:0;bottom:0;background:var(--brand);color:#fff;padding:.75rem 1rem calc(.75rem + env(safe-area-inset-bottom))}
+footer .inner{max-width:34rem;margin:0 auto;display:flex;gap:.9rem;align-items:center}
+#save{flex:0 0 auto;font:inherit;font-weight:700;background:#fff;color:#2337c6;border:0;border-radius:999px;padding:.75rem 1.5rem;cursor:pointer}
+#save:hover:not(:disabled){background:#f2b544;color:#14233a}
+#save:focus-visible{outline:3px solid #f2b544;outline-offset:2px}
+#save:disabled{opacity:.6;cursor:progress}
+#result{flex:1;font-size:.9rem;margin:0}
+.done{margin:2.5rem 0;font-size:1.15rem;font-weight:600}
+#result.status.err,#result.status.warn{color:#f2b544}
+.guide{background:var(--guide);color:#e8edf7;border-radius:.9rem;padding:1rem .4rem .85rem;margin:1.2rem 0 1.4rem}
+.g-row{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:.3rem;text-align:center}
+.g-row+.g-row{margin-top:.9rem;padding-top:.9rem;border-top:1px solid rgba(255,255,255,.12)}
+.g-item svg.i{width:clamp(22px,7vw,32px);height:clamp(22px,7vw,32px)}
+.g-item b{display:block;font-size:clamp(.62rem,2.7vw,.78rem);font-weight:600;line-height:1.2;margin-top:.3rem}
+.g-item .m{display:flex;align-items:center;justify-content:center;gap:.25rem;margin-top:.4rem;font-size:clamp(.6rem,2.5vw,.72rem);color:#b6c0d4}
+.g-item .m svg{height:8px;width:auto}
+.g-multi{grid-template-columns:auto 1fr;align-items:center;gap:.9rem;text-align:left;padding-left:.7rem;padding-right:.7rem}
+.g-note{margin:0;font-size:clamp(.66rem,2.8vw,.8rem);line-height:1.4;color:#b6c0d4}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<header class="brand"><div class="inner"><h1>Tónica</h1><span class="id" id="devid"></span></div></header>
+<main>
+<p id="loading" class="status">Loading settings…</p>
+<p id="who" class="who hidden"></p>
+
+<form id="f" class="hidden" novalidate>
+<fieldset id="signin" class="hidden">
+<legend>Sign in to Spotify</legend>
+<div id="signin-text" class="hidden">
+<button type="button" class="code" id="signin-code" title="Copy the code"></button> <span class="hint" id="signin-copied"></span>
+<ol class="steps-mini" id="signin-steps">
+<li>Copy the code and leave this page.</li>
+<li>Open spotify.com/pair, enter the code and approve.</li>
+<li>Join Tónica-Setup again to finish.</li>
+</ol>
+<a class="btn-pair hidden" id="signin-link" href="https://spotify.com/pair" target="_blank" rel="noopener">Open spotify.com/pair</a>
+</div>
+<p class="hint" id="signin-msg"></p>
+</fieldset>
+<fieldset id="fs-wifi">
+<legend>Wi-Fi</legend>
+<label for="net">Network</label>
+<select id="net"></select>
+<div id="newnet" class="hidden">
+<label for="other" id="other-l">Network name</label>
+<input id="other" autocomplete="off" maxlength="32">
+<label for="pass">Password</label>
+<input id="pass" type="text" class="secret" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false" maxlength="64">
+<button type="button" class="link" id="pass-show">Show</button>
+<p class="hint">On iPhone, copy it from Settings > Wi-Fi > WifiName ⓘ > Password.</p>
+<p class="hint">Tónica tests the network before saving it. If it can't connect, it stays on its current one.</p>
+</div>
+</fieldset>
+
+<fieldset>
+<legend>Speaker</legend>
+<label for="name">Name in Spotify</label>
+<input id="name" maxlength="64">
+<label for="bitrate">Audio quality</label>
+<select id="bitrate">
+<option value="96">Normal (96 kbps)</option>
+<option value="160">High (160 kbps)</option>
+<option value="320">Very high (320 kbps)</option>
+</select>
+<p id="q-warn" class="status warn hidden"></p>
+</fieldset>
+
+<section class="guide" aria-label="Button guide">
+<div class="g-row" id="g-play"></div>
+<div class="g-row" id="g-hold"></div>
+<div class="g-row g-multi" id="g-multi">
+<p class="g-note">Press 3 times and hold on the playing Tónica: the other Tónicas join in. On another Tónica: it joins the one that plays. Again to leave. Its light glows plum while it leads, and blinks every 10 s while it follows.</p>
+</div>
+</section>
+
+<fieldset>
+<legend>Play button behavior when nothing is playing</legend>
+<div class="seg" role="radiogroup" aria-label="Source">
+<label><input type="radio" name="src" value="off"><span>Off</span></label>
+<label><input type="radio" name="src" value="liked"><span>Liked Songs</span></label>
+<label><input type="radio" name="src" value="playlist"><span>My playlists</span></label>
+<label><input type="radio" name="src" value="url"><span>Link</span></label>
+</div>
+<div id="pl-box" class="hidden">
+<label for="pl">Playlist</label>
+<select id="pl"><option value="">Loading your playlists…</option></select>
+<p id="pl-status" class="status hidden"></p>
+</div>
+<div id="url-box" class="hidden">
+<label for="url">Spotify link or URI</label>
+<input id="url" inputmode="url" placeholder="https://open.spotify.com/playlist/…" autocomplete="off">
+<p class="hint">A playlist, album or artist URL.</p>
+</div>
+<div id="mode-box">
+<label id="mode-l">Mode</label>
+<div class="seg" role="radiogroup" aria-labelledby="mode-l">
+<label><input type="radio" name="mode" value="default"><span>Default</span></label>
+<label><input type="radio" name="mode" value="shuffle"><span>Shuffle</span></label>
+<label><input type="radio" name="mode" value="newest"><span>Newest first</span></label>
+<label><input type="radio" name="mode" value="radio" id="m-radio"><span>Playlist Radio</span></label>
+<label><input type="radio" name="mode" value="resume"><span>Resume</span></label>
+</div>
+<p class="hint" id="mode-hint"></p>
+</div>
+<label for="rswin">Resume last session time-limit (min)</label>
+<input id="rswin" type="number" min="0" max="10080" inputmode="numeric">
+<p class="hint">If you paused within this many minutes ago, pressing play resumes session.</p>
+</fieldset>
+
+<fieldset>
+<legend>Sharing</legend>
+<p class="hint" id="owner" style="margin-top:0"></p>
+<label for="takeover">When another user selects Tónica</label>
+<select id="takeover">
+<option value="0">Open: anyone can take over as a guest</option>
+<option value="1">Owner priority: guests can use it, but you can take over at any time</option>
+<option value="2">Owner only: just you</option>
+</select>
+<p class="hint">You can always take control back by holding the button for 7s.</p>
+<div class="row">
+<div><label for="grace">Pairing window (s)</label><input id="grace" type="number" min="0" max="3600" inputmode="numeric"></div>
+<div><label for="gidle">Guest idle (min)</label><input id="gidle" type="number" min="0" max="1440" inputmode="numeric"></div>
+</div>
+<label for="gmax">Guest time limit (min, 0 = none)</label>
+<input id="gmax" type="number" min="0" max="1440" inputmode="numeric">
+</fieldset>
+
+<fieldset>
+<legend>Audible Notifications</legend>
+<p class="hint" style="margin-top:0">Tónica speaks when the button starts a fresh session, a guest takes over, autoplay begins or the connection drops. Press the button 4 times to hear what's playing.</p>
+<label for="ttskey">Google AI Studio API key</label>
+<input id="ttskey" type="password" autocomplete="off" spellcheck="false" maxlength="200">
+<p class="hint" id="ttskey-hint">Leave empty to keep notifications off.</p>
+<button type="button" id="ttsclear" class="link hidden">Delete saved key</button>
+<div class="row">
+<div><label for="vlang">Language</label><select id="vlang"><option value="">Standard voices</option></select></div>
+<div><label for="voice">Voice</label><select id="voice"></select></div>
+</div>
+<label for="style">Style</label>
+<textarea id="style" rows="2" maxlength="300"></textarea>
+<div class="actions"><button type="button" id="preview" class="secondary">Preview on speaker</button><p id="tts-status" class="status" role="status" aria-live="polite"></p></div>
+</fieldset>
+
+<fieldset>
+<legend>Recovery</legend>
+<label for="wdog">Restart if Spotify servers unreachable while idle (minutes, 0 = never)</label>
+<input id="wdog" type="number" min="0" max="1440" inputmode="numeric">
+</fieldset>
+</form>
+</main>
+
+<footer><div class="inner">
+<button id="save" type="button" disabled>Save</button>
+<p id="result" role="status" aria-live="polite"></p>
+</div></footer>
+
+<script>
+const $ = (id) => document.getElementById(id);
+const MODE_HINTS = {
+  default: "Plays in the order Spotify shows it.",
+  shuffle: "Starts on a random track and shuffles the rest.",
+  newest: "Most recently added first.",
+  radio: "An endless station seeded by this playlist (not for Liked Songs).",
+  resume: "Continues where this preset last stopped.",
+};
+let state = null, pending = false, playlistsLoaded = false;
+// Gemini's 30 standard voices (always available, also before Tónica is online)
+const STD_VOICES = "Zephyr:Bright,Puck:Upbeat,Charon:Informative,Kore:Firm,Fenrir:Excitable,Leda:Youthful,Orus:Firm,Aoede:Breezy,Callirrhoe:Easy-going,Autonoe:Bright,Enceladus:Breathy,Iapetus:Clear,Umbriel:Easy-going,Algieba:Smooth,Despina:Smooth,Erinome:Clear,Algenib:Gravelly,Rasalgethi:Informative,Laomedeia:Upbeat,Achernar:Soft,Alnilam:Firm,Schedar:Even,Gacrux:Mature,Pulcherrima:Forward,Achird:Friendly,Zubenelgenubi:Casual,Vindemiatrix:Gentle,Sadachbia:Lively,Sadaltager:Knowledgeable,Sulafat:Warm"
+  .split(",").map((p) => p.split(":"));
+let voices = null, voicesLoading = false, ttsClear = false, previewing = false;
+const langName = (() => { try { const d = new Intl.DisplayNames(["en"], { type: "language" }); return (c) => d.of(c) || c; } catch (e) { return (c) => c; } })();
+const ttsOn = () => (state && state.notify.key_set && !ttsClear) || $("ttskey").value.trim() !== "";
+
+function fillVoices(want) {
+  const lang = $("vlang").value, sel = $("voice");
+  want = want || sel.value;
+  sel.innerHTML = "";
+  const add = (v, t) => { const o = document.createElement("option"); o.value = v; o.textContent = t; sel.appendChild(o); };
+  if (!lang) STD_VOICES.forEach(([n, d]) => add(n, `${n}, ${d.toLowerCase()}`));
+  else for (const [id, name, l, g, acc] of voices || []) if (l === lang) add(id, `${name}${g ? ` (${g === "f" ? "female" : g === "m" ? "male" : g})` : ""}${acc ? `, ${acc}` : ""}`);
+  const ids = [...sel.options].map((o) => o.value.toLowerCase());
+  const i = ids.indexOf(String(want).toLowerCase());
+  if (i >= 0) sel.selectedIndex = i;
+}
+
+async function loadVoices() {
+  if (voicesLoading || voices) return;
+  voicesLoading = true;
+  const st = $("tts-status");
+  st.textContent = "Loading voices…"; st.className = "status";
+  try {
+    const r = await fetch("/setup/voices", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ key: $("ttskey").value.trim() }) });
+    const j = await r.json();
+    if (!j.ok) throw new Error(j.message || "unavailable");
+    voices = j.voices;
+    const keep = $("voice").value, sel = $("vlang");
+    const langs = [...new Set(voices.map((v) => v[2]))].sort((a, b) => langName(a).localeCompare(langName(b)));
+    for (const l of langs) { const o = document.createElement("option"); o.value = l; o.textContent = langName(l); sel.appendChild(o); }
+    // a saved non-standard voice: show its language
+    const cur = voices.find((v) => v[0].toLowerCase() === keep.toLowerCase());
+    if (cur && !STD_VOICES.some(([n]) => n.toLowerCase() === keep.toLowerCase())) { sel.value = cur[2]; fillVoices(keep); }
+    st.textContent = `Key OK: ${voices.length.toLocaleString("en")} voices in ${langs.length} languages.` + phrasesHint(state && state.notify.status);
+  } catch (e) {
+    st.textContent = "Couldn't load the voice list (" + e.message + "). The standard voices still work.";
+    st.className = "status warn";
+  } finally { voicesLoading = false; }
+}
+
+function syncTts() {
+  const saved = state && state.notify.key_set;
+  $("ttsclear").classList.toggle("hidden", !saved);
+  $("ttsclear").textContent = ttsClear ? "Keep the saved key" : "Remove the saved key";
+  $("ttskey").placeholder = saved ? (ttsClear ? "Will be removed when you save" : "Saved (type a new key to replace it)") : "Paste your key";
+  const canPlay = !state || !state.notify || state.notify.can_play !== false;  // false mid-setup
+  $("preview").disabled = previewing || !ttsOn() || !canPlay;
+  if (!canPlay && ttsOn() && !previewing) $("tts-status").textContent = "Preview works once setup is finished and Tónica has restarted.";
+  syncGuide();
+}
+
+async function preview() {
+  if (previewing) return;
+  previewing = true; syncTts();
+  const st = $("tts-status");
+  st.textContent = "Rendering a sample… (about 5 s)"; st.className = "status";
+  try {
+    const r = await fetch("/setup/preview", { method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ key: $("ttskey").value.trim(), voice: $("voice").value, style: $("style").value.trim() }) });
+    const j = await r.json();
+    if (!j.ok) throw new Error(j.message || "failed");
+    st.textContent = "Playing on Tónica.";
+  } catch (e) { st.textContent = "Preview failed: " + e.message; st.className = "status err"; }
+  finally { previewing = false; syncTts(); }
+}
+
+function phrasesHint(s) {
+  if (!s || s === "off" || s === "ready") return "";
+  const m = s.match(/(\d+)\/(\d+)/);
+  return m ? ` Fixed phrases are being prepared (${m[1]} of ${m[2]}).` : "";
+}
+
+function radio(name) { const r = document.querySelector(`input[name=${name}]:checked`); return r ? r.value : ""; }
+function setRadio(name, v) { const r = document.querySelector(`input[name=${name}][value="${v}"]`); if (r) r.checked = true; }
+
+// open.spotify.com/{playlist|album|artist}/ID?si=... -> spotify:{type}:ID
+function toUri(s) {
+  s = s.trim();
+  if (/^spotify:(playlist|album|artist):[A-Za-z0-9]{22}$/.test(s)) return s;
+  const m = s.match(/open\.spotify\.com\/(?:intl-[a-z-]+\/)?(playlist|album|artist)\/([A-Za-z0-9]{22})/);
+  return m ? `spotify:${m[1]}:${m[2]}` : "";
+}
+
+function syncPreset() {
+  const src = radio("src");
+  $("pl-box").classList.toggle("hidden", src !== "playlist");
+  $("url-box").classList.toggle("hidden", src !== "url");
+  $("mode-box").classList.toggle("hidden", src === "off");
+  const liked = src === "liked";
+  $("m-radio").disabled = liked;
+  if (liked && radio("mode") === "radio") setRadio("mode", "default");
+  $("mode-hint").textContent = MODE_HINTS[radio("mode")] || "";
+  if (src === "playlist" && !playlistsLoaded) loadPlaylists();
+}
+
+async function loadPlaylists() {
+  playlistsLoaded = true;
+  const sel = $("pl"), st = $("pl-status");
+  try {
+    const r = await fetch("/setup/playlists");
+    const j = await r.json();
+    if (!r.ok || !Array.isArray(j.playlists)) throw new Error(j.error || "no playlists");
+    sel.innerHTML = "";
+    for (const p of j.playlists) {
+      const o = document.createElement("option");
+      o.value = p.uri; o.textContent = `${p.name} (${p.tracks})`; o.dataset.name = p.name;
+      sel.appendChild(o);
+    }
+    if (state && state.settings.preset_uri.startsWith("spotify:playlist:")) sel.value = state.settings.preset_uri;
+    st.classList.add("hidden");
+  } catch (e) {
+    sel.innerHTML = '<option value="">Unavailable</option>';
+    st.textContent = "Couldn't load your playlists (" + e.message + "). Try pasting a link instead.";
+    st.className = "status warn";
+    setRadio("src", "url"); playlistsLoaded = false; syncPreset();
+  }
+}
+
+function fill(s) {
+  state = s;
+  $("devid").textContent = s.device.host;
+  const net = $("net");
+  net.innerHTML = "";
+  const keep = document.createElement("option");
+  keep.value = ""; keep.textContent = s.wifi.current ? `${s.wifi.current}` : "Choose a network";
+  net.appendChild(keep);
+  for (const n of s.networks) {
+    const o = document.createElement("option");
+    o.value = n.ssid; o.textContent = `${n.ssid} (${n.rssi} dBm)`;
+    net.appendChild(o);
+  }
+  const other = document.createElement("option");
+  other.value = "\u0000other"; other.textContent = "Other network…";
+  net.appendChild(other);
+  const g = s.settings;
+  $("name").value = s.device.name;
+  $("owner").textContent = s.device.owner ? `Owner: ${s.device.owner}` : "No owner yet. Sign in with the code above.";
+  $("bitrate").value = String(g.bitrate);
+  $("takeover").value = String(g.takeover);
+  $("grace").value = g.grace_sec; $("gidle").value = g.guest_idle_min; $("gmax").value = g.guest_max_min;
+  $("wdog").value = g.watchdog_min; $("rswin").value = g.resume_window_min;
+  const u = g.preset_uri;
+  setRadio("src", !u || u === "off" ? "off" : u === "liked" ? "liked" : u.startsWith("spotify:playlist:") ? "playlist" : "url");
+  if (radio("src") === "url") $("url").value = u;
+  setRadio("mode", g.preset_mode || "default");
+  const n = s.notify || { key_set: false, voice: "Kore", style: "", status: "off" };
+  s.notify = n;
+  $("style").value = n.style;
+  fillVoices(n.voice);
+  if (!$("voice").value) { const o = document.createElement("option"); o.value = n.voice; o.textContent = n.voice; $("voice").appendChild(o); }
+  $("tts-status").textContent = phrasesHint(n.status).trim();
+  syncTts();
+  if (n.key_set) loadVoices();
+  syncPreset(); syncNet(); syncSignin(s.signin); applyStage();
+  $("loading").classList.add("hidden"); $("f").classList.remove("hidden");
+  $("save").disabled = false;
+  syncSave();
+}
+
+// One flow, in order: Wi-Fi first, then the owner's sign-in (code), then the settings.
+function stage() {
+  if (!state) return "all";
+  if (state.device.owner) return "all";
+  return state.wifi.rssi !== undefined ? "signin" : "wifi";
+}
+function applyStage() {
+  const st = stage();
+  if (st === "all") watchCanPlay();
+  $("fs-wifi").classList.toggle("hidden", st === "signin");
+  document.querySelectorAll("#f > fieldset:not(#fs-wifi):not(#signin), #f > .guide")
+    .forEach((e) => e.classList.toggle("hidden", st !== "all"));
+  document.querySelector("footer").classList.toggle("hidden", st === "signin");
+  const owner = state && state.device.owner;
+  $("owner").textContent = owner ? `Owner: ${owner}` : "";
+  $("who").textContent = owner ? `✓ Signed in as ${owner}` : "";
+  $("who").classList.toggle("hidden", !owner);
+  syncSave();
+}
+
+// Mid-setup the board is still starting its player: check until it can play (enables the preview).
+let playTimer = 0;
+function watchCanPlay() {
+  clearTimeout(playTimer);
+  if (!state || !state.notify || state.notify.can_play !== false) return;
+  playTimer = setTimeout(() => fetch("/setup/state").then((r) => r.json()).then((s) => {
+    state.notify.can_play = s.notify && s.notify.can_play;
+    if (state.notify.can_play !== false) $("tts-status").textContent = "";
+    syncTts(); watchCanPlay();
+  }).catch(watchCanPlay), 5000);
+}
+
+// Owner sign-in with a code: shown until it completes; the code renews itself.
+let signinTimer = 0;
+function syncSignin(si) {
+  const waiting = stage() === "signin" || (!!si && si.state !== "done" && !state.device.owner);
+  $("signin").classList.toggle("hidden", !waiting);
+  if (si && si.code) {
+    $("signin-code").textContent = si.code;
+    $("signin-link").href = si.url;
+  }
+  $("signin-text").classList.toggle("hidden", !(si && si.code));
+  const viaUsb = !!window.TONICA_USB;  // set by the web installer's frame; the hotspot has no internet
+  $("signin-link").classList.toggle("hidden", !viaUsb);
+  $("signin-steps").classList.toggle("hidden", viaUsb);
+  $("signin-msg").textContent = !si ? "Getting a code…" : si.state === "signing_in" ? "Approved. Signing in…"
+    : si.message || (si.code ? "" : "Getting a code…");
+  clearTimeout(signinTimer);
+  if (waiting) signinTimer = setTimeout(() => fetch("/setup/state").then((r) => r.json())
+    .then((s) => { state.device.owner = s.device.owner; state.wifi = s.wifi; syncSignin(s.signin); applyStage(); })
+    .catch(() => syncSignin(si)), 4000);
+}
+
+$("signin-code").addEventListener("click", async () => {
+  const code = $("signin-code").textContent;
+  let ok = false;
+  try { await navigator.clipboard.writeText(code); ok = true; } catch (e) {}
+  if (!ok) {  // the hotspot page is plain http: no clipboard API there
+    const t = document.createElement("textarea");
+    t.value = code; document.body.appendChild(t); t.select();
+    try { ok = document.execCommand("copy"); } catch (e) {}
+    t.remove();
+  }
+  $("signin-copied").textContent = ok ? "Copied" : "Select the code and copy it";
+  setTimeout(() => ($("signin-copied").textContent = ""), 2500);
+});
+
+$("pass-show").addEventListener("click", () => {
+  const shown = $("pass").classList.toggle("shown");
+  $("pass-show").textContent = shown ? "Hide" : "Show";
+});
+
+function syncNet() {
+  const v = $("net").value;
+  const isOther = v === "\u0000other";
+  $("newnet").classList.toggle("hidden", v === "");
+  $("other").classList.toggle("hidden", !isOther); $("other-l").classList.toggle("hidden", !isOther);
+}
+
+function collect() {
+  const src = radio("src");
+  let preset = "off";
+  if (src === "liked") preset = "liked";
+  else if (src === "playlist") preset = $("pl").value;
+  else if (src === "url") preset = toUri($("url").value);
+  if ((src === "playlist" || src === "url") && !preset) throw new Error(src === "url" ? "That isn't a Spotify playlist, album or artist link." : "Pick a playlist.");
+  const v = $("net").value, num = (id) => Math.max(0, parseInt($(id).value || "0", 10));
+  const body = {
+    name: $("name").value.trim(), bitrate: +$("bitrate").value, takeover: +$("takeover").value,
+    grace_sec: num("grace"), guest_idle_min: num("gidle"), guest_max_min: num("gmax"), watchdog_min: num("wdog"), resume_window_min: num("rswin"),
+    preset_uri: preset, preset_mode: radio("mode") || "default",
+    preset_name: src === "playlist" ? ($("pl").selectedOptions[0]?.dataset.name || "") : "",
+    tts_voice: $("voice").value, tts_style: $("style").value.trim(),
+  };
+  const key = $("ttskey").value.trim();
+  if (key) body.tts_key = key;
+  else if (ttsClear) body.tts_clear = true;
+  if (v !== "") body.wifi = { ssid: v === "\u0000other" ? $("other").value.trim() : v, password: $("pass").value };
+  if (body.wifi && !body.wifi.ssid) throw new Error("Type the network name.");
+  if (!body.name) throw new Error("The name can't be empty.");
+  return body;
+}
+
+// Wi-Fi, name and quality are read at start-up: changing them needs "Save and restart".
+// Everything else is saved as it changes; the button then just closes the hotspot.
+const VIA_USB = !!window.TONICA_USB;  // web installer: no hotspot to close
+const RESTART_IDS = new Set(["net", "other", "pass", "name", "bitrate"]);
+function needsRestart() {
+  return $("net").value !== "" || $("name").value.trim() !== state.device.name || +$("bitrate").value !== state.settings.bitrate;
+}
+function syncSave() {
+  if (pending || !state) return;
+  const btn = $("save");
+  if (stage() === "wifi") { btn.textContent = "Connect"; btn.classList.remove("hidden"); return; }
+  const restart = needsRestart();
+  btn.textContent = restart ? "Save and restart" : "Close hotspot";
+  btn.classList.toggle("hidden", VIA_USB && !restart);
+  // Measured 2026-11-02: decoding never limits quality on this board (4.7x realtime at 320 kbps);
+  // only a weak Wi-Fi signal can make Very high rebuffer.
+  const rssi = state.wifi.rssi, weak = +$("bitrate").value === 320 && rssi !== undefined && rssi < -75;
+  $("q-warn").textContent = weak ? `Weak Wi-Fi strength (${rssi} dBm): Very High may buffer.` : "";
+  $("q-warn").classList.toggle("hidden", !weak);
+}
+
+function show(msg, cls) { const r = $("result"); r.textContent = msg; r.className = cls || ""; }
+
+async function post(body) {
+  const r = await fetch("/setup/save", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
+  return r.json();
+}
+
+// Save as you go: settings that need no restart, a moment after each change (text fields on leave).
+let autoTimer = 0, autoBusy = false, autoAgain = false;
+function scheduleAutosave() { clearTimeout(autoTimer); autoTimer = setTimeout(autosave, 400); }
+async function autosave() {
+  if (stage() !== "all" || pending) return;
+  if (autoBusy) { autoAgain = true; return; }
+  let body;
+  try { body = collect(); } catch (e) { show(e.message, "status err"); return; }
+  delete body.wifi;  // restart settings stay as saved until "Save and restart"
+  body.name = state.device.name; body.bitrate = state.settings.bitrate; body.keep_open = true;
+  autoBusy = true; show("Saving…", "status");
+  try {
+    const j = await post(body);
+    if (!j.ok) throw new Error(j.message || "not saved");
+    for (const k of ["takeover", "grace_sec", "guest_idle_min", "guest_max_min", "watchdog_min", "resume_window_min", "preset_uri", "preset_mode"])
+      state.settings[k] = body[k];
+    if (body.tts_key) { state.notify.key_set = true; $("ttskey").value = ""; }
+    if (body.tts_clear) { state.notify.key_set = false; ttsClear = false; }
+    syncTts();
+    show("Saved", "status");
+  } catch (e) {
+    show("Not saved (" + e.message + ").", "status err");
+  } finally {
+    autoBusy = false;
+    if (autoAgain) { autoAgain = false; autosave(); }
+  }
+}
+$("f").addEventListener("change", (e) => { if (!RESTART_IDS.has(e.target.id)) scheduleAutosave(); });
+
+function finished(msg) {  // the hotspot is closing: nothing left to do on this page
+  document.querySelector("main").innerHTML = `<p class="done">${msg}</p>`;
+  document.querySelector("footer").classList.add("hidden");
+}
+
+async function save() {
+  if (pending) return;  // one request at a time
+  if (stage() === "all" && !needsRestart()) {  // everything is saved already: close the hotspot
+    pending = true; $("save").disabled = true;
+    try {
+      const j = await post({ close_only: true });
+      if (!j.ok) throw new Error(j.message || "failed");
+      finished("Done. This window will close.");
+    } catch (e) {
+      show("No answer from Tónica (" + e.message + ").", "status warn");
+      $("save").disabled = false;
+    } finally { pending = false; }
+    return;
+  }
+  let body;
+  try { body = collect(); } catch (e) { show(e.message, "status err"); return; }
+  if (stage() === "wifi" && !body.wifi) { show("Choose your Wi-Fi network.", "status err"); return; }
+  pending = true; $("save").disabled = true; $("save").textContent = "Saving…";
+  show(body.wifi ? "Trying network… (up to 20 s)" : "");
+  try {
+    const j = await post(body);
+    if (!j.ok) { show(j.message || "Not saved.", "status err"); return; }
+    if (j.next === "signin") {  // Wi-Fi works; the hotspot stays for the sign-in
+      show("Connected. Now sign in.", "status");
+      state.wifi.rssi = 0; state.wifi.current = body.wifi.ssid;
+      $("net").value = ""; $("pass").value = ""; syncNet();
+      pending = false; $("save").disabled = false;
+      applyStage(); syncSignin(null);
+      return;
+    }
+    if (VIA_USB) { show(j.message || "Saved. Tónica is restarting.", "status"); $("save").textContent = "Saved"; return; }
+    finished("Saved. Tónica is restarting and this window will close.");
+    return;
+  } catch (e) {
+    show("No answer from Tónica (" + e.message + "). If you changed Wi-Fi it may have saved and restarted.", "status warn");
+  } finally {
+    pending = false;
+    if ($("save").textContent === "Saving…") { $("save").disabled = false; syncSave(); }
+  }
+}
+
+// Button guide: icon, name, then the gesture (dot = press, line = hold)
+const ICON = {
+  pp: '<path d="M4 5v14l9-7z" fill="currentColor"/><path d="M15 5h2.5v14H15zM19.5 5H22v14h-2.5z" fill="currentColor"/>',
+  next: '<path d="M4 5v14l10-7z" fill="currentColor"/><path d="M17 5h2.5v14H17z" fill="currentColor"/>',
+  prev: '<path d="M4.5 5H7v14H4.5z" fill="currentColor"/><path d="M20 5v14l-10-7z" fill="currentColor"/>',
+  vdown: '<path d="M3 9h4l5-4v14l-5-4H3z" fill="currentColor"/><path d="M15.5 12h6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>',
+  vup: '<path d="M3 9h4l5-4v14l-5-4H3z" fill="currentColor"/><path d="M15.5 12h6M18.5 9v6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>',
+  heart: '<path d="M12 20s-7.5-4.6-7.5-10.2A4.3 4.3 0 0 1 12 7.2a4.3 4.3 0 0 1 7.5 2.6C19.5 15.4 12 20 12 20z" fill="currentColor"/>',
+  pair: '<circle cx="9" cy="8" r="3.2" fill="currentColor"/><path d="M2.5 20c0-3.6 2.9-6.5 6.5-6.5s6.5 2.9 6.5 6.5z" fill="currentColor"/><path d="M19 7v7M15.5 10.5h7" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>',
+  home: '<path d="M3 11.5 12 4l9 7.5V20h-6v-5.5H9V20H3z" fill="currentColor"/>',
+  wifi: '<path d="M2.5 9a14 14 0 0 1 19 0M5.5 12.5a9.5 9.5 0 0 1 13 0M9 16a4.5 4.5 0 0 1 6 0" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/><circle cx="12" cy="19.5" r="1.6" fill="currentColor"/>' +
+    // gear in the corner (settings), cut out from the arcs by a ring in the guide's background colour
+    '<circle cx="19" cy="19" r="5" fill="#14233a"/><circle cx="19" cy="19" r="3.1" fill="none" stroke="currentColor" stroke-width="1.7" stroke-dasharray="1.45 1.0"/><circle cx="19" cy="19" r="2.3" fill="currentColor"/><circle cx="19" cy="19" r="0.9" fill="#14233a"/>',
+  x: '<path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/>',
+  multi: '<rect x="1.5" y="4" width="9" height="16" rx="2" fill="currentColor"/><rect x="13.5" y="4" width="9" height="16" rx="2" fill="currentColor"/>' +
+    '<circle cx="6" cy="14.5" r="2.6" fill="#14233a"/><circle cx="18" cy="14.5" r="2.6" fill="#14233a"/><circle cx="6" cy="8" r="1.2" fill="#14233a"/><circle cx="18" cy="8" r="1.2" fill="#14233a"/>',
+  speak: '<path d="M3 4.5h13.5v10H8.5L4.5 18v-3.5H3z" fill="currentColor"/><path d="M19.2 6.5a6 6 0 0 1 0 6M21.6 4.3a9.2 9.2 0 0 1 0 10.4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>',
+};
+function mark(g) {  // "." press, "-" hold
+  let x = 1, out = "";
+  for (const c of g) {
+    if (c === ".") { out += `<circle cx="${x + 3}" cy="4" r="3" fill="currentColor"/>`; x += 9; }
+    else { out += `<rect x="${x}" y="2.5" width="18" height="3" rx="1.5" fill="currentColor"/>`; x += 21; }
+  }
+  return `<svg viewBox="0 0 ${x} 8" aria-hidden="true">${out}</svg>`;
+}
+function tile(icon, name, color, gesture, secs) {  // the playback row is icons only (name for screen readers)
+  const d = document.createElement("div");
+  d.className = "g-item";
+  d.setAttribute("aria-label", name + (secs ? `, hold ${secs} s` : ""));
+  d.innerHTML = `<svg class="i" viewBox="0 0 24 24" style="color:${color}" aria-hidden="true">${ICON[icon]}</svg>` +
+    (secs ? `<b style="color:${color}">${name}</b>` : "") + `<span class="m">${mark(gesture)}${secs ? secs + " s" : ""}</span>`;
+  return d;
+}
+[["pp", "Play / Pause", "."], ["next", "Next", ".."], ["prev", "Previous", "..."], ["speak", "What's playing", "...."], ["vdown", "Volume down", ".-"], ["vup", "Volume up", "..-"]]
+  .forEach(([i, n, g]) => { const t = tile(i, n, "#e8e8e8", g); if (i === "speak") t.id = "g-speak"; $("g-play").appendChild(t); });
+// "What's playing" needs Audible Notifications: shown only while they are on
+function syncGuide() {
+  const on = ttsOn();
+  $("g-speak").classList.toggle("hidden", !on);
+  $("g-play").style.gridTemplateColumns = `repeat(${on ? 6 : 5},minmax(0,1fr))`;
+}
+[["heart", "Like song", "#ff5c8a", 1], ["pair", "Pair mode", "#3ddc84", 4], ["home", "Back to owner", "#ffb300", 7],
+ ["wifi", "Wi-Fi setup", "#26c6da", 10], ["x", "Cancel", "#8a8a8a", 13]]
+  .forEach(([i, n, c, s]) => $("g-hold").appendChild(tile(i, n, c, "-", s)));
+// Sinfónica (multiroom): 3 presses + a 1 s hold. Plum: the LED's aubergine, lightened for the dark guide.
+{ const t = tile("multi", "Sinfónica", "#c9a0dc", "...-", 1); t.setAttribute("aria-label", "Sinfónica: press 3 times, then hold 1 s"); $("g-multi").prepend(t); }
+
+document.querySelectorAll("input[name=src],input[name=mode]").forEach((e) => e.addEventListener("change", syncPreset));
+$("net").addEventListener("change", syncNet);
+$("save").addEventListener("click", save);
+$("vlang").addEventListener("change", () => fillVoices());
+$("preview").addEventListener("click", preview);
+$("ttsclear").addEventListener("click", () => { ttsClear = !ttsClear; syncTts(); });
+$("ttskey").addEventListener("input", syncTts);
+$("ttskey").addEventListener("change", () => { if ($("ttskey").value.trim().length > 20) { voices = null; $("vlang").length = 1; loadVoices(); } });
+["input", "change"].forEach((ev) => $("f").addEventListener(ev, syncSave));
+fetch("/setup/state").then((r) => r.json()).then(fill).catch((e) => show("Couldn't load settings: " + e.message, "status err"));
+</script>
+</body>
+</html>

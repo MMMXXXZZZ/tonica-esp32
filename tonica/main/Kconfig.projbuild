@@ -1,0 +1,110 @@
+menu "Tónica"
+
+config TONICA_DEVICE_NAME
+    string "Spotify Connect device name"
+    default "Tónica"
+
+choice TONICA_AUDIO_OUT
+    prompt "Wired audio output"
+    default TONICA_AUDIO_OUT_PDM
+    help
+        A USB audio adapter on the native USB port always takes priority when present.
+
+config TONICA_AUDIO_OUT_I2S_DAC
+    bool "External I2S DAC (PCM5102A / MAX98357A)"
+
+config TONICA_AUDIO_OUT_PDM
+    bool "PDM on GPIOs + RC low-pass filter (no DAC needed)"
+endchoice
+
+config TONICA_PDM_LEFT_GPIO
+    int "PDM left channel GPIO"
+    default 4
+    depends on TONICA_AUDIO_OUT_PDM
+
+config TONICA_PDM_RIGHT_GPIO
+    int "PDM right channel GPIO"
+    default 7
+    depends on TONICA_AUDIO_OUT_PDM
+
+config TONICA_PDM_CLK_GPIO
+    int "PDM clock GPIO (unused by an RC filter, but must be routed somewhere free)"
+    default 21
+    depends on TONICA_AUDIO_OUT_PDM
+
+config TONICA_I2S_BCK_GPIO
+    int "I2S BCK (bit clock) GPIO"
+    default 5
+
+config TONICA_I2S_WS_GPIO
+    int "I2S WS / LRCK GPIO"
+    default 6
+
+config TONICA_I2S_DOUT_GPIO
+    int "I2S DOUT (to DAC DIN) GPIO"
+    default 7
+
+config TONICA_I2S_MCLK_GPIO
+    int "I2S MCLK GPIO (-1 = unused; PCM5102A/MAX98357A need none)"
+    default -1
+
+config TONICA_BITRATE
+    int "Preferred Ogg Vorbis bitrate (96, 160 or 320)"
+    default 320
+
+choice TONICA_TAKEOVER
+    prompt "When another Spotify account selects this speaker"
+    default TONICA_TAKEOVER_OPEN
+    help
+        The owner is the account saved on the board (first to pair, or set with the
+        'creds' console command). Other accounts only ever get a temporary guest
+        session: never saved to flash, gone after a reboot, and the owner can always
+        take the speaker back by selecting it.
+
+config TONICA_TAKEOVER_OPEN
+    bool "Open: anyone may take over as a guest"
+config TONICA_TAKEOVER_OWNER_PRIORITY
+    bool "Owner priority: guests only while the owner is not connected"
+    help
+        The owner counts as connected while this speaker is the owner's active
+        device and it is playing, or one of the owner's other devices (the phone
+        app) is online. Playing always keeps the speaker; a paused session keeps
+        it until the owner's app goes offline (iOS: ~30 s after locking the phone)
+        or the owner switches device.
+config TONICA_TAKEOVER_OWNER_ONLY
+    bool "Owner only: other accounts are refused"
+endchoice
+
+config TONICA_GRACE_SEC
+    int "Pairing window after boot (seconds; 0 = off)"
+    default 180
+    help
+        For this long after a power-on or normal boot, while the owner's music is
+        not playing, any account may claim the speaker (whatever the takeover
+        policy) and becomes its temporary owner: it can take the speaker back from
+        guests, and the policy protects it like the owner. The real owner stays
+        saved and can still take over from anyone; returning to the owner (or a
+        power cycle) ends the temporary ownership. The LED breathes soft green
+        while the window is open.
+
+config TONICA_PRESET
+    string "Play this when the button is pressed with nothing to take over (Spotify URI, empty = off)"
+    default ""
+
+config TONICA_RESUME_WINDOW_MIN
+    int "Button: resume the last session (instead of the preset) if it changed within N minutes"
+    default 120
+
+config TONICA_GUEST_IDLE_MIN
+    int "Return to the owner after a guest has been idle (not playing) for N minutes (0 = never)"
+    default 10
+
+config TONICA_GUEST_MAX_MIN
+    int "Return to the owner after a guest session of N minutes, even while playing (0 = no limit)"
+    default 0
+
+config TONICA_WATCHDOG_MIN
+    int "Reboot after the Spotify session has been down for N minutes while nothing plays (0 = off)"
+    default 10
+
+endmenu
