@@ -1,0 +1,30 @@
+# The Listenica host for macOS as released (universal, LISTENICA_RELEASE=ON). Started on demand by
+# the local release script (gh workflow run), which downloads the binary from this run's artifacts.
+name: Listenica macOS release build
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build
+        # paths mapped away: the release script refuses binaries containing /Users/
+        run: |
+          cmake -S host -B build -DCMAKE_BUILD_TYPE=Release -DLISTENICA_RELEASE=ON \
+            "-DCMAKE_OSX_ARCHITECTURES=arm64;x86_64" -DCMAKE_OSX_DEPLOYMENT_TARGET=11.0 \
+            "-DCMAKE_C_FLAGS=-ffile-prefix-map=$GITHUB_WORKSPACE=." "-DCMAKE_CXX_FLAGS=-ffile-prefix-map=$GITHUB_WORKSPACE=."
+          cmake --build build --target listenica_host -j 4
+      - name: Version must equal VERSION
+        run: |
+          want="listenica_host $(head -n 1 VERSION | tr -d '\r\n ')"
+          got="$(./build/listenica_host version)"
+          echo "$got"
+          test "$got" = "$want"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: listenica_host-macos
+          path: build/listenica_host
+          if-no-files-found: error
