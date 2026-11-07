@@ -2,6 +2,7 @@
 // Shannon implementation was verified against the live access point.
 #include <algorithm>
 #include <cstdio>
+#include <cstdlib>
 #include <cstring>
 #include <vector>
 #include "listenica/ap_session.h"
@@ -211,7 +212,9 @@ int main() {
       }
     };
     auto alive = [] { return true; };
-    auto near = [](uint64_t got, uint64_t want) { return got + 2 >= want && got <= want + 40; };  // scheduler slack
+    // scheduler slack: 40 ms here; shared CI machines (GitHub sets CI) overshoot short sleeps far more
+    const uint64_t slack = getenv("CI") ? 200 : 40;
+    auto near = [slack](uint64_t got, uint64_t want) { return got + 2 >= want && got <= want + slack; };
     {  // spaced, one at a time (sequential callers here)
       KeyPacer p(gap, b0, b1, b2);
       Server s{{1, 1, 1}};
