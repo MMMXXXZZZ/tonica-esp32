@@ -4,8 +4,9 @@
 // lists nearby networks; a submitted network is tested before it is saved, so a
 // typo leaves the speaker on its current network.
 //
-// Started by holding the button 15 s (5-minute timeout) or at boot when no
-// Wi-Fi is saved (no timeout). LED: cyan blink waiting, cyan breathing while a
+// Started by holding the button 10 s (5-minute timeout), at boot when no Wi-Fi is
+// saved, or at boot when the saved network isn't found within 30 s (no timeout;
+// it closes again if that network comes back). LED: cyan blink waiting, cyan breathing while a
 // phone is connected, green flash on success (then reboot), red blinks on timeout.
 #include <cstdint>
 #include <functional>
@@ -30,4 +31,8 @@ struct WifiSetupHooks {
 
 // timeout_s = 0: stay up until a network is configured. False if already running.
 bool wifi_setup_start(httpd_handle_t srv, const std::string& device_id, uint32_t timeout_s, WifiSetupHooks hooks);
+// Atomic read: safe in the Wi-Fi event handler. While true, the station doesn't reconnect on its
+// own (connect attempts scan every channel and disturb the hotspot); stop() resumes it.
 bool wifi_setup_active();
+int wifi_setup_clients();  // phones joined to the hotspot
+void wifi_setup_stop();    // close it without a save (the saved network came back)

@@ -36,6 +36,8 @@ input:focus-visible,select:focus-visible,textarea:focus-visible,button:focus-vis
 .seg input:checked+span{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
 .seg input:disabled+span{opacity:.4;cursor:not-allowed}
 .hidden{display:none}
+label.check{display:flex;align-items:center;gap:.55rem;font-weight:550}
+label.check input{width:1.15rem;height:1.15rem;margin:0;accent-color:var(--accent)}
 .secret{-webkit-text-security:disc}.secret.shown{-webkit-text-security:none}
 .code{display:inline-block;font-family:inherit;font-weight:700;font-size:1.6rem;line-height:1.2;letter-spacing:.14em;color:var(--accent);background:none;border:1.5px dashed var(--line);border-radius:.55rem;padding:.2rem .7rem;margin:.3rem 0;cursor:copy;user-select:all}
 .steps-mini{margin:.4rem 0 0;padding-left:1.2rem}.steps-mini li{margin:.2rem 0}
@@ -72,13 +74,13 @@ footer .inner{max-width:34rem;margin:0 auto;display:flex;gap:.9rem;align-items:c
 
 <form id="f" class="hidden" novalidate>
 <fieldset id="signin" class="hidden">
-<legend>Sign in to Spotify</legend>
+<legend id="signin-l">Sign in to Spotify</legend>
 <div id="signin-text" class="hidden">
 <button type="button" class="code" id="signin-code" title="Copy the code"></button> <span class="hint" id="signin-copied"></span>
 <ol class="steps-mini" id="signin-steps">
 <li>Copy the code and leave this page.</li>
 <li>Open spotify.com/pair, enter the code and approve.</li>
-<li>Join Tónica-Setup again to finish.</li>
+<li id="signin-step3">Join Tónica-Setup again to finish.</li>
 </ol>
 <a class="btn-pair hidden" id="signin-link" href="https://spotify.com/pair" target="_blank" rel="noopener">Open spotify.com/pair</a>
 </div>
@@ -157,6 +159,7 @@ footer .inner{max-width:34rem;margin:0 auto;display:flex;gap:.9rem;align-items:c
 <fieldset>
 <legend>Sharing</legend>
 <p class="hint" id="owner" style="margin-top:0"></p>
+<button type="button" class="link hidden" id="chowner">Sign in with another account</button>
 <label for="takeover">When another user selects Tónica</label>
 <select id="takeover">
 <option value="0">Open: anyone can take over as a guest</option>
@@ -192,6 +195,8 @@ footer .inner{max-width:34rem;margin:0 auto;display:flex;gap:.9rem;align-items:c
 <legend>Recovery</legend>
 <label for="wdog">Restart if Spotify servers unreachable while idle (minutes, 0 = never)</label>
 <input id="wdog" type="number" min="0" max="1440" inputmode="numeric">
+<label class="check"><input type="checkbox" id="autoupd"> Install updates automatically</label>
+<p class="hint">Only releases signed by Tónica's maker, and only while nothing plays.</p>
 </fieldset>
 </form>
 </main>
@@ -354,6 +359,7 @@ function fill(s) {
   $("takeover").value = String(g.takeover);
   $("grace").value = g.grace_sec; $("gidle").value = g.guest_idle_min; $("gmax").value = g.guest_max_min;
   $("wdog").value = g.watchdog_min; $("rswin").value = g.resume_window_min;
+  $("autoupd").checked = g.auto_update !== 0;
   const u = g.preset_uri;
   setRadio("src", !u || u === "off" ? "off" : u === "liked" ? "liked" : u.startsWith("spotify:playlist:") ? "playlist" : "url");
   if (radio("src") === "url") $("url").value = u;
@@ -389,8 +395,26 @@ function applyStage() {
   $("owner").textContent = owner ? `Owner: ${owner}` : "";
   $("who").textContent = owner ? `✓ Signed in as ${owner}` : "";
   $("who").classList.toggle("hidden", !owner);
+  $("chowner").classList.toggle("hidden", !owner || changingOwner);
   syncSave();
 }
+
+// "Sign in with another account": the owner changes by code, as at first setup. The current
+// owner stays until the new account is approved; then Tónica restarts with it.
+let changingOwner = false;
+$("chowner").addEventListener("click", async () => {
+  if (pending) return;  // one request at a time
+  pending = true; $("chowner").disabled = true;
+  try {
+    const j = await post({ change_owner: true });
+    if (!j.ok) throw new Error(j.message || "failed");
+    changingOwner = true;
+    applyStage(); syncSignin(null);
+    $("signin").scrollIntoView({ block: "start" });
+  } catch (e) {
+    show("Couldn't start the sign-in (" + e.message + ").", "status err");
+  } finally { pending = false; $("chowner").disabled = false; }
+});
 
 // Mid-setup the board is still starting its player: check until it can play (enables the preview).
 let playTimer = 0;
@@ -407,8 +431,14 @@ function watchCanPlay() {
 // Owner sign-in with a code: shown until it completes; the code renews itself.
 let signinTimer = 0;
 function syncSignin(si) {
-  const waiting = stage() === "signin" || (!!si && si.state !== "done" && !state.device.owner);
+  // an owner change in progress, also after rejoining the hotspot (a sign-in running while there is an owner)
+  const changing = changingOwner || (!!si && si.state !== "done" && !!state.device.owner);
+  if (changing && si && si.state === "done") { finished("Signed in. Tónica is restarting with that account."); return; }
+  const waiting = stage() === "signin" || (!!si && si.state !== "done" && !state.device.owner) || changing;
   $("signin").classList.toggle("hidden", !waiting);
+  $("signin-l").textContent = changing ? "Sign in with another account" : "Sign in to Spotify";
+  $("signin-step3").textContent = changing ? "Tónica restarts with that account once you approve. Its current owner stays until then."
+    : "Join Tónica-Setup again to finish.";
   if (si && si.code) {
     $("signin-code").textContent = si.code;
     $("signin-link").href = si.url;
@@ -462,6 +492,7 @@ function collect() {
   const body = {
     name: $("name").value.trim(), bitrate: +$("bitrate").value, takeover: +$("takeover").value,
     grace_sec: num("grace"), guest_idle_min: num("gidle"), guest_max_min: num("gmax"), watchdog_min: num("wdog"), resume_window_min: num("rswin"),
+    auto_update: $("autoupd").checked ? 1 : 0,
     preset_uri: preset, preset_mode: radio("mode") || "default",
     preset_name: src === "playlist" ? ($("pl").selectedOptions[0]?.dataset.name || "") : "",
     tts_voice: $("voice").value, tts_style: $("style").value.trim(),
@@ -517,7 +548,7 @@ async function autosave() {
   try {
     const j = await post(body);
     if (!j.ok) throw new Error(j.message || "not saved");
-    for (const k of ["takeover", "grace_sec", "guest_idle_min", "guest_max_min", "watchdog_min", "resume_window_min", "preset_uri", "preset_mode"])
+    for (const k of ["takeover", "grace_sec", "guest_idle_min", "guest_max_min", "watchdog_min", "resume_window_min", "auto_update", "preset_uri", "preset_mode"])
       state.settings[k] = body[k];
     if (body.tts_key) { state.notify.key_set = true; $("ttskey").value = ""; }
     if (body.tts_clear) { state.notify.key_set = false; ttsClear = false; }

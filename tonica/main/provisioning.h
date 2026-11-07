@@ -23,6 +23,7 @@ struct Settings {
   int bitrate = -1;         // 96 | 160 | 320
   int takeover = -1;        // 0 open, 1 owner priority, 2 owner only
   int grace_sec = -1, guest_idle_min = -1, guest_max_min = -1, watchdog_min = -1, resume_window_min = -1;
+  int auto_update = -1;     // 1 install signed GitHub releases while idle, 0 off (auto_update.h)
   std::string preset_uri;   // "" = build default; "off"; "liked"; or a spotify: URI
   std::string preset_mode;  // default | shuffle | newest | radio | resume
   std::string resume_ctx, resume_track;  // where the preset last stopped (Resume mode)
@@ -46,6 +47,7 @@ struct Settings {
   int eff_guest_max_min() const { return guest_max_min >= 0 ? guest_max_min : CONFIG_TONICA_GUEST_MAX_MIN; }
   int eff_resume_window_min() const { return resume_window_min >= 0 ? resume_window_min : CONFIG_TONICA_RESUME_WINDOW_MIN; }
   int eff_watchdog_min() const { return watchdog_min >= 0 ? watchdog_min : CONFIG_TONICA_WATCHDOG_MIN; }
+  bool eff_auto_update() const { return (auto_update >= 0 ? auto_update : CONFIG_TONICA_AUTO_UPDATE) != 0; }
   std::string eff_preset_uri() const {
     std::string u = preset_uri.empty() ? std::string(CONFIG_TONICA_PRESET) : preset_uri;
     return u == "off" ? std::string() : u;
@@ -72,6 +74,8 @@ void console_start(Settings* s, void (*on_status)());
 void console_set_tone_handler(void (*fn)(uint32_t ms));
 // Sinfonica prototype: 'follow <leader ip>' / 'follow off'
 void console_set_follow_handler(void (*fn)(const char* arg));
+// 'update' / 'update install': GitHub release check (auto_update.h); replies "UPDATE <message>"
+void console_set_update_handler(void (*fn)(const char* arg));
 // The setup page's actions over the serial console, for the web installer (same code as the
 // hotspot page). Replies are one line each: "SETUP <state|save|playlists|preview> <json>".
 //   setupstate | setup <json> | setupplaylists | setuppreview <json>

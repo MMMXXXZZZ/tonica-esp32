@@ -26,6 +26,9 @@ Listenica implements Spotify's protocols itself (clean room). It was modelled on
 | espressif/mdns | 1.14.1 | Espressif Systems | Apache 2.0 | `Apache-2.0.txt` |
 | espressif/led_strip | 3.1.1 | Espressif Systems | Apache 2.0 | `Apache-2.0.txt` |
 | espressif/usb_host_uac (vendored, **modified**: see `tonica/components/usb_host_uac/MODIFIED.md`) | 1.5.0 | Espressif Systems | Apache 2.0 | `tonica/components/usb_host_uac/LICENSE` |
+| esp_ghota (vendored, **modified**: see `tonica/components/esp_ghota/MODIFIED.md`) | commit 335b330 | Justin Hammond | MIT | `esp_ghota-MIT.txt` |
+| lwjson (bundled with esp_ghota) | — | Tilen Majerle | MIT | `lwjson-MIT.txt` |
+| semver.c (bundled with esp_ghota) | — | Tomás Aparicio | MIT | `semver.c-MIT.txt` |
 | Mozilla CA certificate list (as data, in ESP-IDF's certificate bundle) | 2025-02-25 | Mozilla | MPL 2.0 | source: https://curl.se/docs/caextract.html |
 | stb_vorbis (Ogg Vorbis decoder) | 1.22 | Sean Barrett and contributors | MIT or public domain (Unlicense) | `stb_vorbis-MIT-or-Unlicense.txt` |
 | tiny-AES-c | — | kokke and contributors | Unlicense (public domain) | `tinyaes-Unlicense.txt` |

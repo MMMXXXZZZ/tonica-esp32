@@ -33,7 +33,16 @@ void stop();
 void scan() {
   wifi_scan_config_t sc = {};
   sc.show_hidden = false;
-  if (esp_wifi_scan_start(&sc, true) != ESP_OK) return;
+  // A scan fails while the station is still connecting (ESP_ERR_WIFI_STATE, esp_wifi.h), which it
+  // always is while the saved network is missing: stop that attempt first. The disconnect handler
+  // doesn't reconnect while the hotspot is up (wifi_setup_active()).
+  wifi_ap_record_t cur = {};
+  if (esp_wifi_sta_get_ap_info(&cur) != ESP_OK) esp_wifi_disconnect();
+  esp_err_t e = esp_wifi_scan_start(&sc, true);
+  if (e != ESP_OK) {
+    ESP_LOGW(TAG, "network scan failed (%s): the page lists no networks", esp_err_to_name(e));
+    return;
+  }
   uint16_t n = 24;
   std::vector<wifi_ap_record_t> recs(n);
   if (esp_wifi_scan_get_ap_records(&n, recs.data()) != ESP_OK) return;
@@ -65,7 +74,8 @@ std::string json_escape(const std::string& s) {
 }
 
 esp_err_t send_json(httpd_req_t* req, const std::string& j, int status = 200) {
-  if (status != 200) httpd_resp_set_status(req, status == 503 ? "503 Service Unavailable" : "400 Bad Request");
+  if (status != 200)
+    httpd_resp_set_status(req, status == 503 ? "503 Service Unavailable" : status == 403 ? "403 Forbidden" : "400 Bad Request");
   httpd_resp_set_type(req, "application/json");
   httpd_resp_set_hdr(req, "Cache-Control", "no-store");
   return httpd_resp_send(req, j.data(), j.size());
@@ -134,6 +144,24 @@ void close_task(void* arg) {  // after the reply has reached the phone
   vTaskDelete(nullptr);
 }
 
+// The setup routes sit on the board's one web server, so while the hotspot is up they answer on
+// the LAN too. True if this request came in on the hotspot itself (local address 192.168.4.1;
+// the server's sockets are IPv6, so an IPv4 address arrives as ::ffff:a.b.c.d).
+bool via_hotspot(httpd_req_t* req) {
+  esp_netif_ip_info_t ip = {};
+  if (!s_ap_netif || esp_netif_get_ip_info(s_ap_netif, &ip) != ESP_OK) return false;
+  sockaddr_storage a = {};
+  socklen_t n = sizeof a;
+  if (getsockname(httpd_req_to_sockfd(req), (sockaddr*)&a, &n) != 0) return false;
+  if (a.ss_family == AF_INET) return ((sockaddr_in*)&a)->sin_addr.s_addr == ip.ip.addr;
+  if (a.ss_family == AF_INET6) {
+    const uint8_t* b = ((sockaddr_in6*)&a)->sin6_addr.s6_addr;
+    static const uint8_t kMapped[12] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0xff, 0xff};
+    return memcmp(b, kMapped, 12) == 0 && memcmp(b + 12, &ip.ip.addr, 4) == 0;
+  }
+  return false;
+}
+
 esp_err_t h_save(httpd_req_t* req) {
   int len = req->content_len;
   if (len <= 0 || len > 4096) return send_json(req, "{\"ok\":false,\"message\":\"Bad request.\"}", 400);
@@ -144,6 +172,9 @@ esp_err_t h_save(httpd_req_t* req) {
     if (r <= 0) return ESP_FAIL;
     got += r;
   }
+  // a new owner needs someone at the speaker: on its hotspot (button hold) or its USB cable
+  if (body.find("\"change_owner\"") != std::string::npos && !via_hotspot(req))
+    return send_json(req, "{\"ok\":false,\"message\":\"Change the owner from Tónica's own hotspot.\"}", 403);
   bool close = false, reboot = false;
   status_led_fx(LedFx::PendingWhite);
   std::string reply = s_hooks.save ? s_hooks.save(body, close, reboot) : "{\"ok\":false}";
@@ -214,6 +245,9 @@ void stop() {
   s_stop = true;
   esp_wifi_set_mode(WIFI_MODE_STA);
   s_active = false;
+  // reconnects were paused while the hotspot was up: resume them if the station is offline
+  wifi_ap_record_t cur = {};
+  if (esp_wifi_sta_get_ap_info(&cur) != ESP_OK) esp_wifi_connect();
 }
 
 void timeout_task(void* arg) {
@@ -230,6 +264,15 @@ void timeout_task(void* arg) {
 }  // namespace
 
 bool wifi_setup_active() { return s_active; }
+int wifi_setup_clients() { return s_clients; }
+
+void wifi_setup_stop() {
+  if (!s_active) return;
+  s_done = true;  // ends the timeout task without its failure blink
+  stop();
+  status_led_fx(LedFx::None);
+  ESP_LOGI(TAG, "hotspot closed");
+}
 
 bool wifi_setup_start(httpd_handle_t srv, const std::string& device_id, uint32_t timeout_s, WifiSetupHooks hooks) {
   if (s_active.exchange(true) || !srv) return false;

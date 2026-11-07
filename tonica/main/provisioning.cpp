@@ -36,6 +36,8 @@ static void (*g_tone)(uint32_t) = nullptr;
 void console_set_tone_handler(void (*fn)(uint32_t)) { g_tone = fn; }
 static void (*g_follow)(const char*) = nullptr;
 void console_set_follow_handler(void (*fn)(const char*)) { g_follow = fn; }
+static void (*g_update)(const char*) = nullptr;
+void console_set_update_handler(void (*fn)(const char*)) { g_update = fn; }
 
 static std::string nvs_str(nvs_handle_t h, const char* k) {
   size_t n = 0;
@@ -74,6 +76,7 @@ void settings_load(Settings& s) {
   geti("gidle", s.guest_idle_min);
   geti("gmax", s.guest_max_min);
   geti("wdog", s.watchdog_min);
+  geti("autoupd", s.auto_update);
   geti("rswin", s.resume_window_min);
   s.preset_uri = nvs_str(h, "puri");
   s.preset_mode = nvs_str(h, "pmode");
@@ -146,6 +149,7 @@ void settings_save_runtime(const Settings& s) {
   seti("gidle", s.guest_idle_min);
   seti("gmax", s.guest_max_min);
   seti("wdog", s.watchdog_min);
+  seti("autoupd", s.auto_update);
   seti("rswin", s.resume_window_min);
   sets("puri", s.preset_uri);
   sets("pmode", s.preset_mode);
@@ -270,6 +274,11 @@ static void handle_line(ConsoleCtx* ctx, const std::string& line) {
     std::string arg;
     is >> arg;
     if (g_follow) g_follow(arg.c_str());
+    else printf("ERR not ready\n");
+  } else if (cmd == "update") {  // update: check GitHub; update install: install a newer signed release
+    std::string arg;
+    is >> arg;
+    if (g_update) g_update(arg.c_str());
     else printf("ERR not ready\n");
   } else if (cmd == "tone") {
     uint32_t ms = 3000;

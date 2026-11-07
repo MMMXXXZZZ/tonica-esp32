@@ -25,6 +25,7 @@
 #include "takeover.h"
 #include "button.h"
 #include "wifi_setup.h"
+#include "auto_update.h"
 #include "event_log.h"
 #include "notify.h"
 #include "device_login.h"
@@ -86,7 +87,9 @@ static void on_wifi(void*, esp_event_base_t base, int32_t id, void* data) {
     bool was_up = xEventGroupGetBits(g_wifi_events) & WIFI_UP;
     xEventGroupClearBits(g_wifi_events, WIFI_UP);
     if (was_up) notify_wifi(false);  // atomic only; the notify worker decides whether to speak
-    esp_wifi_connect();
+    // Not while the setup hotspot is up: each attempt scans every channel, which disturbs the
+    // hotspot and makes its network scan fail. The boot wait retries; closing it resumes.
+    if (!wifi_setup_active()) esp_wifi_connect();
   } else if (base == IP_EVENT && id == IP_EVENT_STA_GOT_IP) {
     notify_wifi(true);
     auto* e = static_cast<ip_event_got_ip_t*>(data);
@@ -237,6 +240,7 @@ static std::string setup_state_json() {
   cJSON_AddNumberToObject(st, "guest_max_min", g_settings.eff_guest_max_min());
   cJSON_AddNumberToObject(st, "watchdog_min", g_settings.eff_watchdog_min());
   cJSON_AddNumberToObject(st, "resume_window_min", g_settings.eff_resume_window_min());
+  cJSON_AddNumberToObject(st, "auto_update", g_settings.eff_auto_update() ? 1 : 0);
   std::string pu = g_settings.eff_preset_uri();
   cJSON_AddStringToObject(st, "preset_uri", pu.empty() ? "off" : pu.c_str());
   cJSON_AddStringToObject(st, "preset_mode", g_settings.eff_preset_mode().c_str());
@@ -301,17 +305,27 @@ static void ensure_sntp() {
 }
 
 // Owner sign-in with a code (see device_login.h): from the boot wait, or from the setup page
-// right after its Wi-Fi step when the board has no owner yet.
-static void start_owner_signin() {
-  status_led_waiting(Waiting::Account);
-  device_login_start([](const Credentials& c) {  // runs on the sign-in task (internal stack)
+// right after its Wi-Fi step when the board has no owner yet. replace: the setup page's "Sign in
+// with another account" (e.g. after lending the speaker); the current owner stays until the new
+// account is approved, then the board restarts into it.
+static void start_owner_signin(bool replace = false) {
+  if (!replace) status_led_waiting(Waiting::Account);
+  device_login_start([replace](const Credentials& c) {  // runs on the sign-in task (internal stack)
+    std::string before;
     {
       std::lock_guard<std::mutex> l(g_cred_mu);
+      before = g_owner;
       g_settings.creds = c;
       g_owner = c.username;
     }
     settings_save_creds(c);
-    event_log("owner signed in with a code");
+    if (!replace) {
+      event_log("owner signed in with a code");
+      return;
+    }
+    temp_owner_clear();  // the previous session's temporary owner doesn't carry over
+    event_log("owner changed with a code (%s)", before == c.username ? "same account" : "new account");
+    reboot_with_reason("setup page: owner changed");
   });
 }
 
@@ -337,6 +351,16 @@ static std::string setup_save(const std::string& body, bool& close, bool& reboot
     if (g_hotspot_boot) reboot = true;  // only a restart leaves hotspot mode
     event_log("setup page closed");
     return std::string("{\"ok\":true,\"reboot\":") + (reboot ? "true" : "false") + "}";
+  }
+  // "Sign in with another account": a new owner by code. Only from the hotspot or over USB (the
+  // web server checks); the hotspot closes on its timeout as usual, and the sign-in carries on.
+  if (cJSON_IsTrue(cJSON_GetObjectItem(j, "change_owner"))) {
+    cJSON_Delete(j);
+    if (!g_session_ok) return "{\"ok\":false,\"message\":\"Tónica isn't online yet: connect it to Wi-Fi first.\"}";
+    start_owner_signin(true);
+    ESP_LOGI(TAG, "setup page: owner change by code started");
+    event_log("owner change started from the setup page");
+    return "{\"ok\":true,\"reboot\":false,\"next\":\"signin\"}";
   }
   // keep_open: a save as the user changes a setting; the hotspot stays and nothing restarts
   const bool keep_open = cJSON_IsTrue(cJSON_GetObjectItem(j, "keep_open"));
@@ -392,6 +416,7 @@ static std::string setup_save(const std::string& body, bool& close, bool& reboot
   g_settings.guest_max_min = clampv(num("guest_max_min", g_settings.eff_guest_max_min()), 0, 1440);
   g_settings.watchdog_min = clampv(num("watchdog_min", g_settings.eff_watchdog_min()), 0, 1440);
   g_settings.resume_window_min = clampv(num("resume_window_min", g_settings.eff_resume_window_min()), 0, 10080);
+  g_settings.auto_update = clampv(num("auto_update", g_settings.eff_auto_update() ? 1 : 0), 0, 1);
   std::string pu = str(j, "preset_uri"), pm = str(j, "preset_mode");
   bool uri_ok = pu == "off" || pu == "liked" || pu.rfind("spotify:playlist:", 0) == 0 ||
                 pu.rfind("spotify:album:", 0) == 0 || pu.rfind("spotify:artist:", 0) == 0;
@@ -420,6 +445,45 @@ static std::string setup_save(const std::string& body, bool& close, bool& reboot
   ESP_LOGI(TAG, "settings saved from the setup page%s", reboot ? "; restarting" : "");
   event_log("settings saved from the setup page");
   return std::string("{\"ok\":true,\"reboot\":") + (reboot ? "true" : "false") + "}";
+}
+
+static WifiSetupHooks wifi_setup_hooks();
+static std::string status_string();
+
+// The saved network may be gone (the speaker moved). Waiting for it forever left no way to
+// pick another one: the web server and the button only start after Wi-Fi is up. After 30 s
+// without it, open the setup hotspot (no timeout) and keep retrying the saved network in the
+// background while no phone is on the hotspot. A save from the page restarts onto the new
+// network; if the saved one comes back first, the hotspot closes and start-up carries on.
+static void wait_for_wifi_or_open_setup() {
+  constexpr uint32_t kFallbackMs = 30000, kRetryMs = 20000;
+  if (xEventGroupWaitBits(g_wifi_events, WIFI_UP, pdFALSE, pdTRUE, pdMS_TO_TICKS(kFallbackMs)) & WIFI_UP) return;
+  ESP_LOGW(TAG, "saved Wi-Fi \"%s\" not found in %u s: opening the setup hotspot", g_settings.ssid.c_str(),
+           unsigned(kFallbackMs / 1000));
+  event_log("Wi-Fi \"%s\" not found at boot: setup hotspot opened", g_settings.ssid.c_str());
+  if (!net_services_server())
+    net_services_start("tonica-" + g_device_id.substr(0, 6), g_settings.ota_token, g_device_id, device_name(), status_string);
+  g_hotspot_boot = true;  // a save restarts onto the new network
+  if (!wifi_setup_start(net_services_server(), g_device_id, 0, wifi_setup_hooks())) {
+    ESP_LOGE(TAG, "setup hotspot failed to start; waiting for the saved Wi-Fi");
+    xEventGroupWaitBits(g_wifi_events, WIFI_UP, pdFALSE, pdTRUE, portMAX_DELAY);
+    g_hotspot_boot = false;
+    return;
+  }
+  status_led_waiting(Waiting::Wifi);
+  while (!(xEventGroupWaitBits(g_wifi_events, WIFI_UP, pdFALSE, pdTRUE, pdMS_TO_TICKS(kRetryMs)) & WIFI_UP)) {
+    printf("PROVISION saved Wi-Fi not found: join the 'Tónica-Setup-%.4s' hotspot to pick another network\n",
+           g_device_id.c_str());
+    // the saved network again, quietly: never while a phone is on the hotspot (the attempt
+    // scans every channel) or while the page is testing a new network
+    if (wifi_setup_clients() == 0 && !g_setup_wifi_saved) esp_wifi_connect();
+  }
+  status_led_waiting(Waiting::None);
+  if (!g_setup_wifi_saved) {  // the saved network came back by itself
+    g_hotspot_boot = false;
+    wifi_setup_stop();
+    ESP_LOGI(TAG, "saved Wi-Fi \"%s\" is back: setup hotspot closed", g_settings.ssid.c_str());
+  }
 }
 
 static WifiSetupHooks wifi_setup_hooks() {
@@ -811,7 +875,7 @@ extern "C" void app_main() {
   }
   wifi_start();
   console_set_setup_hooks(wifi_setup_hooks());  // web installer: the setup page over USB
-  xEventGroupWaitBits(g_wifi_events, WIFI_UP, pdFALSE, pdTRUE, portMAX_DELAY);
+  wait_for_wifi_or_open_setup();
   {
     // unique per board: tonica-<first 6 hex of the hashed device id>.local
     std::string host = "tonica-" + g_device_id.substr(0, 6);
@@ -1123,6 +1187,16 @@ extern "C" void app_main() {
   }
   xTaskCreatePinnedToCore(guardian_task, "guardian", 3072, nullptr, 2, nullptr, 0);
   start_button();
+  {  // signed releases from GitHub, installed only while idle (auto_update.h)
+    AutoUpdateHooks uh;
+    uh.enabled = [] { return g_settings.eff_auto_update(); };
+    uh.idle = [] {
+      return !music_playing() && !(g_player && g_player->announcing()) && !notify_busy() &&
+             !sinfonica_following() && sinfonica_followers() == 0 && !wifi_setup_active();
+    };
+    auto_update_start(std::move(uh));
+    console_set_update_handler(auto_update_console);
+  }
 
   uint64_t last_status = 0;
   for (;;) {

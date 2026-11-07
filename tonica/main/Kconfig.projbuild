@@ -107,4 +107,9 @@ config TONICA_WATCHDOG_MIN
     int "Reboot after the Spotify session has been down for N minutes while nothing plays (0 = off)"
     default 10
 
+config TONICA_AUTO_UPDATE
+    int "Install signed releases from GitHub automatically while idle (1 = on, 0 = off)"
+    default 1
+    range 0 1
+
 endmenu
