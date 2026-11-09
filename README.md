@@ -1,4 +1,4 @@
-<h1><img src="https://github.com/MMMXXXZZZ/tonica-esp32/raw/main/readme-banner.png" alt="Tónica ESP32"></h1>
+<h1 align="center"><img width="923" height="522" alt="tonica_banner" src="https://github.com/MMMXXXZZZ/tonica-esp32/raw/main/tonica_banner.svg" /></h1>
 
 <p align="center">
 <a href="https://tonica.m44.cl"><strong>Install</strong> (latest)</a> •
@@ -22,9 +22,9 @@ Tónica is a clean-room Spotify Connect receiver modelled on [librespot](https:/
 It runs entirely on the board (no Pi or PC in the audio path), shows up in the Spotify app like any Connect
 speaker, logs in with your own Premium account and plays through a USB-C audio adapter (or an I2S DAC).
 
-| **Listenica** | Shared protocol and player core. Also an executable to test network's multi-room capabilities |
-| **Tónica** | ESP32-S3 speaker, self-sufficient |
-| **Sinfónica** | Multi-speaker Tónica mode, automatic discovery and sync |
+- **Listenica**: Shared protocol and player core. Also an executable to test network's multi-room capabilities
+- **Tónica**: ESP32-S3 speaker, self-sufficient
+- **Sinfónica**: Multi-speaker Tónica mode, automatic discovery and sync
 
 ## Features
 
